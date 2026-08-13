@@ -2,12 +2,24 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import baseQuery from './baseQuery';
 import type { MovieSummary, PaginatedMovies } from './types';
 
+export interface SearchArgs {
+  q: string;
+  page?: number;
+  type?: 'movie' | 'series' | 'episode';
+  year?: number;
+}
+
+function searchParams(args: string | SearchArgs) {
+  if (typeof args === 'string') return { q: args };
+  return args;
+}
+
 export const discoveryApi = createApi({
   reducerPath: 'discoveryApi',
   baseQuery,
   endpoints: (build) => ({
-    search: build.query<PaginatedMovies, string>({
-      query: (q) => ({ url: '/search', params: { q } }),
+    search: build.query<PaginatedMovies, string | SearchArgs>({
+      query: (args) => ({ url: '/search', params: searchParams(args) }),
     }),
     aiSearch: build.query<PaginatedMovies, string>({
       query: (q) => ({ url: '/search/ai', params: { q } }),
@@ -23,6 +35,9 @@ export const discoveryApi = createApi({
     }),
     discoverFeed: build.query<PaginatedMovies, void>({
       query: () => '/feed/discover',
+    }),
+    topRatedFeed: build.query<PaginatedMovies, void>({
+      query: () => '/feed/top-rated',
     }),
     recommendLastSearch: build.query<{ movies: MovieSummary[] }, string>({
       query: (userId) => `/recommend/last-search/${userId}`,
@@ -46,6 +61,7 @@ export const {
   useGenreFeedQuery,
   useOngoingFeedQuery,
   useDiscoverFeedQuery,
+  useTopRatedFeedQuery,
   useRecommendLastSearchQuery,
   useRecommendSearchHistoryQuery,
   useRecommendFavouritesQuery,

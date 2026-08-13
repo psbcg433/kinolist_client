@@ -14,8 +14,8 @@ html, body, #root { min-height: 100%; }
 body {
   margin: 0;
   min-width: 320px;
-  background: #080b12;
-  color: #f6f8fc;
+  background: #070711;
+  color: #f7f3ff;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -24,14 +24,14 @@ a { color: inherit; }
 img { display: block; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #080b12; }
-::-webkit-scrollbar-thumb { background: #273247; border: 2px solid #080b12; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #3a4964; }
+::-webkit-scrollbar-track { background: #070711; }
+::-webkit-scrollbar-thumb { background: #33254d; border: 2px solid #070711; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #5e3d8f; }
 
 .poster-rail {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(148px, 12vw);
+  grid-auto-columns: minmax(144px, 11vw);
   gap: 18px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;

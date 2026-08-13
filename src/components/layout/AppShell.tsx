@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   AppBar,
   Avatar,
@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -15,9 +16,13 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import TheatersRoundedIcon from '@mui/icons-material/TheatersRounded';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, useSessionBootstrap } from '../../hooks/useAuth';
@@ -27,12 +32,23 @@ import { authApi, useLogoutMutation } from '../../api/authApi';
 import { useGetSummaryQuery } from '../../api/libraryApi';
 import { pushToast } from '../../store/uiSlice';
 
-const PUBLIC_NAV = [
-  { to: '/', label: 'Browse' },
-  { to: '/search', label: 'Search' },
-];
+const RAIL_WIDTH = 82;
 
-const MEMBER_NAV = [{ to: '/recommendations', label: 'For You' }];
+interface NavItem {
+  to: string;
+  label: string;
+  icon: ReactNode;
+  protected?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { to: '/', label: 'Home', icon: <HomeRoundedIcon /> },
+  { to: '/search', label: 'Explore', icon: <SearchRoundedIcon /> },
+  { to: '/recommendations', label: 'For you', icon: <AutoAwesomeRoundedIcon />, protected: true },
+  { to: '/library', label: 'Library', icon: <BookmarkBorderRoundedIcon />, protected: true },
+  { to: '/profile', label: 'Profile', icon: <PersonOutlineRoundedIcon />, protected: true },
+  { to: '/settings', label: 'Settings', icon: <SettingsOutlinedIcon />, protected: true },
+];
 
 export function AppShell() {
   useSessionBootstrap();
@@ -47,13 +63,21 @@ export function AppShell() {
   const [mobileAnchor, setMobileAnchor] = useState<null | HTMLElement>(null);
   const { data: summaryData } = useGetSummaryQuery(undefined, { skip: !isAuthenticated });
   const watchlistCount = summaryData?.summary?.watchlistCount ?? 0;
-  const navItems = isAuthenticated ? [...PUBLIC_NAV, ...MEMBER_NAV] : PUBLIC_NAV;
+  const navItems = NAV_ITEMS.filter((item) => !item.protected || isAuthenticated);
+
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+
+  const closeMenus = () => {
+    setAccountAnchor(null);
+    setMobileAnchor(null);
+  };
 
   const handleLogout = async () => {
     try {
       await logout(undefined).unwrap();
     } catch {
-      // The browser session still has to be cleared if the network is unavailable.
+      // Local credentials still need clearing when the network request fails.
     }
     dispatch(logoutLocal());
     dispatch(authApi.util.resetApiState());
@@ -61,153 +85,121 @@ export function AppShell() {
     navigate('/login');
   };
 
-  const closeMenus = () => {
-    setAccountAnchor(null);
-    setMobileAnchor(null);
-  };
-
-  const isActive = (path: string) =>
-    path === '/' ? location.pathname === path : location.pathname.startsWith(path);
-
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
-      <AppBar position="sticky" elevation={0}>
-        <Toolbar sx={{ minHeight: { xs: 64, md: 72 }, gap: 1 }}>
-          <Box
-            component={Link}
-            to="/"
-            aria-label="KinoList home"
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 1,
-              mr: { xs: 1, md: 4 },
-              flexShrink: 0,
-              color: 'text.primary',
-              textDecoration: 'none',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'grid',
-                width: 34,
-                height: 34,
-                placeItems: 'center',
-                borderRadius: 2,
-                color: 'common.white',
-                background: 'linear-gradient(135deg, #e50914, #ff5364)',
-                boxShadow: '0 8px 24px rgba(229,9,20,.28)',
-              }}
-            >
-              <TheatersRoundedIcon fontSize="small" />
-            </Box>
-            <Typography variant="h6" sx={{ fontWeight: 900, letterSpacing: '-0.04em' }}>
-              Kino<span style={{ color: '#ff4650' }}>List</span>
-            </Typography>
-          </Box>
-
-          {!isMobile && (
-            <Box component="nav" aria-label="Main navigation" sx={{ display: 'flex', gap: 0.5, flexGrow: 1 }}>
-              {navItems.map((item) => (
-                <Button
-                  key={item.to}
+    <Box sx={{ minHeight: '100vh' }}>
+      {!isMobile && (
+        <Box
+          component="aside"
+          sx={{
+            position: 'fixed',
+            inset: 0,
+            right: 'auto',
+            zIndex: (value) => value.zIndex.appBar + 1,
+            width: RAIL_WIDTH,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            bgcolor: 'rgba(5,6,13,.96)',
+            borderRight: 1,
+            borderColor: 'divider',
+          }}
+        >
+          <Logo compact />
+          <Divider flexItem />
+          <Box component="nav" aria-label="Main navigation" sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 1, py: 2 }}>
+            {navItems.map((item) => (
+              <Tooltip key={item.to} title={item.label} placement="right" arrow>
+                <IconButton
                   component={Link}
                   to={item.to}
-                  color="inherit"
-                  size="small"
+                  aria-label={item.label}
                   sx={{
-                    minHeight: 36,
-                    px: 1.5,
-                    color: isActive(item.to) ? 'text.primary' : 'text.secondary',
-                    bgcolor: isActive(item.to) ? 'action.selected' : 'transparent',
+                    width: 46,
+                    height: 46,
+                    color: isActive(item.to) ? 'primary.light' : 'text.secondary',
+                    bgcolor: isActive(item.to) ? 'rgba(155,92,255,.16)' : 'transparent',
+                    border: '1px solid',
+                    borderColor: isActive(item.to) ? 'rgba(155,92,255,.32)' : 'transparent',
+                    '&:hover': { bgcolor: 'rgba(155,92,255,.12)', color: 'primary.light' },
                   }}
                 >
-                  {item.label}
-                </Button>
-              ))}
-            </Box>
-          )}
-
-          <Box sx={{ flexGrow: isMobile ? 1 : 0 }} />
-          <Tooltip title="Search movies">
-            <IconButton component={Link} to="/search" color="inherit" aria-label="Search movies">
-              <SearchRoundedIcon />
-            </IconButton>
-          </Tooltip>
-
-          {isMobile ? (
-            <>
-              <IconButton
-                color="inherit"
-                aria-label="Open navigation"
-                onClick={(event) => setMobileAnchor(event.currentTarget)}
-              >
-                <MenuRoundedIcon />
-              </IconButton>
-              <Menu anchorEl={mobileAnchor} open={Boolean(mobileAnchor)} onClose={closeMenus}>
-                {navItems.map((item) => (
-                  <MenuItem key={item.to} component={Link} to={item.to} onClick={closeMenus} selected={isActive(item.to)}>
-                    {item.label}
-                  </MenuItem>
-                ))}
-                {isAuthenticated ? (
-                  <>
-                    <MenuItem component={Link} to="/library" onClick={closeMenus}>My library</MenuItem>
-                    <MenuItem component={Link} to="/profile" onClick={closeMenus}>Profile</MenuItem>
-                    <MenuItem component={Link} to="/settings" onClick={closeMenus}>Settings</MenuItem>
-                    <MenuItem onClick={handleLogout} disabled={isLoading}>Log out</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem component={Link} to="/login" onClick={closeMenus}>Sign in</MenuItem>
-                    <MenuItem component={Link} to="/register" onClick={closeMenus}>Create account</MenuItem>
-                  </>
-                )}
-              </Menu>
-            </>
-          ) : isAuthenticated ? (
-            <>
-              <Tooltip title="My library">
-                <IconButton component={Link} to="/library" color="inherit" aria-label="My library">
-                  <Badge badgeContent={watchlistCount} color="secondary" max={99}>
-                    <BookmarkBorderRoundedIcon />
-                  </Badge>
+                  {item.to === '/library' ? (
+                    <Badge badgeContent={watchlistCount} color="secondary" max={99}>{item.icon}</Badge>
+                  ) : item.icon}
                 </IconButton>
               </Tooltip>
-              <IconButton
-                aria-label="Open account menu"
-                onClick={(event) => setAccountAnchor(event.currentTarget)}
-                sx={{ ml: 0.5 }}
-              >
-                <Avatar sx={{ width: 34, height: 34, bgcolor: 'primary.main', fontSize: 14, fontWeight: 800 }}>
+            ))}
+          </Box>
+          <Box sx={{ pb: 2 }}>
+            {isAuthenticated ? (
+              <IconButton aria-label="Open account menu" onClick={(event) => setAccountAnchor(event.currentTarget)}>
+                <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.dark', fontWeight: 900 }}>
                   {user?.email?.charAt(0).toUpperCase() ?? '?'}
                 </Avatar>
               </IconButton>
-              <Menu anchorEl={accountAnchor} open={Boolean(accountAnchor)} onClose={closeMenus}>
-                <MenuItem component={Link} to="/profile" onClick={closeMenus}>Profile</MenuItem>
-                <MenuItem component={Link} to="/settings" onClick={closeMenus}>Settings</MenuItem>
-                <MenuItem component={Link} to="/settings/security" onClick={closeMenus}>Security</MenuItem>
-                <MenuItem onClick={handleLogout} disabled={isLoading}>Log out</MenuItem>
+            ) : (
+              <Tooltip title="Sign in" placement="right"><IconButton component={Link} to="/login"><PersonOutlineRoundedIcon /></IconButton></Tooltip>
+            )}
+          </Box>
+        </Box>
+      )}
+
+      <AppBar position="fixed" elevation={0} sx={{ left: { md: RAIL_WIDTH }, width: { md: `calc(100% - ${RAIL_WIDTH}px)` } }}>
+        <Toolbar sx={{ minHeight: { xs: 64, md: 66 }, px: { xs: 2, md: 3 } }}>
+          {isMobile ? <Logo /> : (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Typography variant="body2" color="text.secondary">Explore the world of cinema</Typography>
+              <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: 'secondary.main', boxShadow: '0 0 12px currentColor' }} />
+            </Box>
+          )}
+          <Box sx={{ flex: 1 }} />
+          <Tooltip title="Search movies">
+            <IconButton component={Link} to="/search" color="inherit"><SearchRoundedIcon /></IconButton>
+          </Tooltip>
+          {isMobile ? (
+            <>
+              <IconButton color="inherit" onClick={(event) => setMobileAnchor(event.currentTarget)}><MenuRoundedIcon /></IconButton>
+              <Menu anchorEl={mobileAnchor} open={Boolean(mobileAnchor)} onClose={closeMenus}>
+                {navItems.map((item) => <MenuItem key={item.to} component={Link} to={item.to} onClick={closeMenus} selected={isActive(item.to)}>{item.label}</MenuItem>)}
+                {isAuthenticated ? <MenuItem onClick={handleLogout} disabled={isLoading}>Log out</MenuItem> : <MenuItem component={Link} to="/login" onClick={closeMenus}>Sign in</MenuItem>}
               </Menu>
             </>
+          ) : isAuthenticated ? (
+            <Typography variant="caption" color="text.secondary" sx={{ ml: 1, maxWidth: 190 }} noWrap>{user?.email}</Typography>
           ) : (
-            <>
+            <Box sx={{ display: 'flex', gap: 1, ml: 1 }}>
               <Button component={Link} to="/login" color="inherit" size="small">Sign in</Button>
-              <Button component={Link} to="/register" variant="contained" size="small" sx={{ ml: 0.5 }}>
-                Join free
-              </Button>
-            </>
+              <Button component={Link} to="/register" variant="contained" size="small">Join now</Button>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
 
-      <Container component="main" maxWidth="xl" sx={{ flexGrow: 1, py: { xs: 3, md: 5 } }}>
-        <Outlet />
-      </Container>
-
-      <Box component="footer" sx={{ mt: 6, py: 4, px: 2, textAlign: 'center', color: 'text.secondary', borderTop: 1, borderColor: 'divider' }}>
-        <Typography variant="caption">KinoList · discover, organise, and remember what to watch next.</Typography>
+      <Box sx={{ ml: { md: `${RAIL_WIDTH}px` }, pt: { xs: '64px', md: '66px' }, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Container component="main" maxWidth={false} sx={{ flex: 1, px: { xs: 2, sm: 3, lg: 4 }, py: { xs: 2.5, md: 3 } }}>
+          <Outlet />
+        </Container>
+        <Box component="footer" sx={{ py: 2.5, px: 3, textAlign: 'center', color: 'text.secondary', borderTop: 1, borderColor: 'divider' }}>
+          <Typography variant="caption">KinoList · discover, organise, remember.</Typography>
+        </Box>
       </Box>
+
+      <Menu anchorEl={accountAnchor} open={Boolean(accountAnchor)} onClose={closeMenus} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+        <MenuItem component={Link} to="/profile" onClick={closeMenus}>Profile</MenuItem>
+        <MenuItem component={Link} to="/settings/security" onClick={closeMenus}>Security</MenuItem>
+        <MenuItem onClick={handleLogout} disabled={isLoading}>Log out</MenuItem>
+      </Menu>
+    </Box>
+  );
+}
+
+function Logo({ compact = false }: { compact?: boolean }) {
+  return (
+    <Box component={Link} to="/" sx={{ minHeight: compact ? 66 : 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 1, px: compact ? 0 : 0.5, color: 'text.primary', textDecoration: 'none', flexShrink: 0 }}>
+      <Box sx={{ display: 'grid', width: 36, height: 36, placeItems: 'center', borderRadius: 2.5, color: '#fff', background: 'linear-gradient(135deg, #7a3cff, #ec3dff)', boxShadow: '0 0 24px rgba(155,92,255,.32)' }}>
+        <TheatersRoundedIcon fontSize="small" />
+      </Box>
+      {!compact && <Typography variant="h6" sx={{ fontWeight: 900, letterSpacing: '-.045em' }}>Kino<span style={{ color: '#c778ff' }}>List</span></Typography>}
     </Box>
   );
 }

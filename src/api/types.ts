@@ -91,6 +91,18 @@ export interface MovieSummary {
   year: string;
   type: string;
   posterUrl: string;
+  runtime?: string | null;
+  genres?: string[];
+  contentRating?: string | null;
+  releaseDate?: string | null;
+  imdbRating?: string | null;
+  imdbVotes?: string | null;
+  metascore?: string | null;
+}
+
+export interface MovieRating {
+  source: string;
+  value: string;
 }
 
 export interface MovieDetail extends MovieSummary {
@@ -102,13 +114,25 @@ export interface MovieDetail extends MovieSummary {
   plot: string | null;
   languages: string[];
   countries: string[];
+  contentRating: string | null;
+  releaseDate: string | null;
+  awards: string | null;
+  ratings: MovieRating[];
   imdbRating: string | null;
+  imdbVotes: string | null;
+  metascore: string | null;
   boxOffice: string | null;
+  totalSeasons: string | null;
 }
 
 export interface PaginatedMovies {
   movies: MovieSummary[];
-  meta: { total: number };
+  meta: {
+    total: number;
+    page?: number;
+    pageSize?: number;
+    totalPages?: number;
+  };
 }
 
 export interface RecentActivityMovie {

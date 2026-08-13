@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
   InputAdornment,
   Paper,
+  Pagination,
   Stack,
   TextField,
   ToggleButton,
@@ -29,11 +30,13 @@ export default function SearchPage() {
   const [query, setQuery] = useState(initialQ);
   const [committedQuery, setCommittedQuery] = useState(initialQ);
   const [mode, setMode] = useState<'keyword' | 'ai'>('keyword');
+  const [movieType, setMovieType] = useState<'all' | 'movie' | 'series'>('all');
+  const [page, setPage] = useState(1);
   const { record } = useRecentActivity();
   const { isAuthenticated } = useAuth();
 
   const debounced = useDebounce(committedQuery, SEARCH_DEBOUNCE_MS);
-  const keyword = useSearchQuery(debounced, {
+  const keyword = useSearchQuery({ q: debounced, page, type: movieType === 'all' ? undefined : movieType }, {
     skip: !debounced || mode !== 'keyword',
   });
   const ai = useAiSearchQuery(debounced, {
@@ -43,12 +46,21 @@ export default function SearchPage() {
   const active = mode === 'keyword' ? keyword : ai;
   const movies = active.data?.movies ?? [];
   const total = active.data?.meta?.total;
+  const totalPages = active.data?.meta?.totalPages ?? 1;
+
+  useEffect(() => {
+    const next = params.get('q') ?? '';
+    setQuery(next);
+    setCommittedQuery(next);
+    setPage(1);
+  }, [params]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
     setCommittedQuery(q);
+    setPage(1);
     if (mode === 'keyword') {
       record('search', { query: q });
     }
@@ -57,6 +69,7 @@ export default function SearchPage() {
   const handleModeChange = (_e: React.MouseEvent, next: 'keyword' | 'ai' | null) => {
     if (!next) return;
     setMode(next);
+    setPage(1);
     if (query.trim()) {
       setCommittedQuery(query.trim());
     }
@@ -93,18 +106,24 @@ export default function SearchPage() {
           </Stack>
         </form>
 
-      <ToggleButtonGroup
-        value={mode}
-        exclusive
-        onChange={handleModeChange}
-        size="small"
-        sx={{ mb: 1 }}
-      >
-        <ToggleButton value="keyword">Keyword</ToggleButton>
-        <ToggleButton value="ai" disabled={!isAuthenticated}>
-          AI natural language
-        </ToggleButton>
-      </ToggleButtonGroup>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ sm: 'center' }}>
+        <ToggleButtonGroup value={mode} exclusive onChange={handleModeChange} size="small">
+          <ToggleButton value="keyword">Keyword</ToggleButton>
+          <ToggleButton value="ai" disabled={!isAuthenticated}>AI natural language</ToggleButton>
+        </ToggleButtonGroup>
+        {mode === 'keyword' && (
+          <ToggleButtonGroup
+            value={movieType}
+            exclusive
+            onChange={(_event, next: 'all' | 'movie' | 'series' | null) => { if (next) { setMovieType(next); setPage(1); } }}
+            size="small"
+          >
+            <ToggleButton value="all">All</ToggleButton>
+            <ToggleButton value="movie">Movies</ToggleButton>
+            <ToggleButton value="series">Series</ToggleButton>
+          </ToggleButtonGroup>
+        )}
+      </Stack>
       {mode === 'ai' && !isAuthenticated && (
         <Typography variant="caption" color="text.secondary">
           AI search requires signing in.
@@ -133,6 +152,16 @@ export default function SearchPage() {
               {mode === 'ai' && ' · AI'}
             </Typography>
             <MovieGrid movies={movies} />
+            {mode === 'keyword' && totalPages > 1 && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <Pagination
+                  page={page}
+                  count={totalPages}
+                  color="primary"
+                  onChange={(_event, next) => { setPage(next); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                />
+              </Box>
+            )}
           </>
         )}
       </Box>

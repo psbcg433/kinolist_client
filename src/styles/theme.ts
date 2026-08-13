@@ -1,18 +1,18 @@
 import { alpha, createTheme } from '@mui/material/styles';
 
-const navy = '#080b12';
-const surface = '#111722';
-const blue = '#5b7cfa';
-const red = '#e50914';
+const ink = '#070711';
+const surface = '#100e1d';
+const violet = '#9254ff';
+const magenta = '#ec3dff';
 
 export const theme = createTheme({
   palette: {
     mode: 'dark',
-    primary: { main: blue, light: '#8da4ff', dark: '#3658d4', contrastText: '#fff' },
-    secondary: { main: red, light: '#ff4650', dark: '#ad0710', contrastText: '#fff' },
-    background: { default: navy, paper: surface },
-    text: { primary: '#f6f8fc', secondary: '#9ba8bc' },
-    divider: alpha('#a9b8d0', 0.16),
+    primary: { main: violet, light: '#c39aff', dark: '#6730cb', contrastText: '#fff' },
+    secondary: { main: magenta, light: '#f887ff', dark: '#a91db7', contrastText: '#fff' },
+    background: { default: ink, paper: surface },
+    text: { primary: '#f7f3ff', secondary: '#aaa2ba' },
+    divider: alpha('#c5a9ff', 0.14),
   },
   shape: { borderRadius: 12 },
   typography: {
@@ -27,41 +27,47 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: { backgroundImage: 'radial-gradient(circle at 15% -10%, rgba(91,124,250,.13), transparent 32%)' },
-        '::selection': { background: alpha(blue, 0.42) },
+        body: {
+          backgroundImage: 'radial-gradient(circle at 18% -10%, rgba(146,84,255,.17), transparent 30%), radial-gradient(circle at 88% 18%, rgba(236,61,255,.07), transparent 24%)',
+          backgroundAttachment: 'fixed',
+        },
+        '::selection': { background: alpha(violet, 0.48) },
       },
     },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: { textTransform: 'none', borderRadius: 999, minHeight: 40, paddingInline: 20 },
-        containedPrimary: { backgroundImage: `linear-gradient(135deg, ${blue}, #745cf6)` },
+        containedPrimary: {
+          backgroundImage: `linear-gradient(135deg, ${violet}, ${magenta})`,
+          '&:hover': { boxShadow: `0 10px 28px ${alpha(violet, 0.32)}` },
+        },
       },
     },
     MuiCard: {
       styleOverrides: {
-        root: { backgroundColor: surface, backgroundImage: 'none', border: `1px solid ${alpha('#a9b8d0', 0.12)}` },
+        root: { backgroundColor: surface, backgroundImage: 'none', border: `1px solid ${alpha('#c5a9ff', 0.12)}` },
       },
     },
     MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(navy, 0.84),
+          backgroundColor: alpha(ink, 0.86),
           backgroundImage: 'none',
           backdropFilter: 'blur(18px)',
-          borderBottom: `1px solid ${alpha('#a9b8d0', 0.13)}`,
+          borderBottom: `1px solid ${alpha('#c5a9ff', 0.13)}`,
         },
       },
     },
-    MuiDialog: { styleOverrides: { paper: { backgroundColor: '#111722', border: `1px solid ${alpha('#a9b8d0', 0.16)}` } } },
+    MuiDialog: { styleOverrides: { paper: { backgroundColor: '#100e1d', border: `1px solid ${alpha('#c5a9ff', 0.18)}` } } },
     MuiTextField: { defaultProps: { variant: 'outlined' } },
     MuiOutlinedInput: {
       styleOverrides: {
-        root: { backgroundColor: alpha('#0b1019', 0.72), '& fieldset': { borderColor: alpha('#a9b8d0', 0.22) } },
+        root: { backgroundColor: alpha('#090812', 0.78), '& fieldset': { borderColor: alpha('#c5a9ff', 0.2) } },
       },
     },
     MuiChip: { styleOverrides: { root: { fontWeight: 650 } } },
-    MuiSkeleton: { defaultProps: { animation: 'wave' }, styleOverrides: { root: { backgroundColor: alpha('#9fb1cd', 0.1) } } },
+    MuiSkeleton: { defaultProps: { animation: 'wave' }, styleOverrides: { root: { backgroundColor: alpha('#c5a9ff', 0.1) } } },
   },
 });

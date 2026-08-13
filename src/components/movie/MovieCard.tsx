@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import ImageNotSupportedRoundedIcon from '@mui/icons-material/ImageNotSupportedRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, type ReactNode } from 'react';
 import type { MovieSummary } from '../../api/types';
@@ -58,6 +59,21 @@ export function MovieCard({ movie, footer }: MovieCardProps) {
               <ImageNotSupportedRoundedIcon fontSize="large" />
             </Box>
           )}
+          {movie.imdbRating && (
+            <Chip
+              icon={<StarRoundedIcon sx={{ color: '#ffc857 !important' }} />}
+              label={movie.imdbRating}
+              size="small"
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                height: 24,
+                bgcolor: 'rgba(7,7,17,.82)',
+                backdropFilter: 'blur(8px)',
+              }}
+            />
+          )}
           {movie.type && (
             <Chip
               label={movie.type}
@@ -68,20 +84,21 @@ export function MovieCard({ movie, footer }: MovieCardProps) {
                 left: 8,
                 height: 24,
                 textTransform: 'capitalize',
-                bgcolor: 'rgba(8,11,18,.78)',
+                bgcolor: 'rgba(7,7,17,.82)',
                 backdropFilter: 'blur(8px)',
               }}
             />
           )}
-          <Box sx={{ position: 'absolute', inset: '55% 0 0', background: 'linear-gradient(transparent, rgba(8,11,18,.72))' }} />
+          <Box sx={{ position: 'absolute', inset: '55% 0 0', background: 'linear-gradient(transparent, rgba(7,7,17,.76))' }} />
         </Box>
         <CardContent sx={{ px: 1.5, py: 1.25, '&:last-child': { pb: 1.25 } }}>
           <Typography variant="body2" noWrap title={movie.title} sx={{ fontWeight: 750 }}>
             {movie.title}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {movie.year || 'Year unavailable'}
-          </Typography>
+          <Box sx={{ mt: .35, display: 'flex', justifyContent: 'space-between', gap: 1 }}>
+            <Typography variant="caption" color="text.secondary">{movie.year || 'Year unavailable'}</Typography>
+            {movie.contentRating && <Typography variant="caption" color="primary.light">{movie.contentRating}</Typography>}
+          </Box>
         </CardContent>
       </CardActionArea>
       {footer}
