@@ -8,6 +8,7 @@ import {
 } from '../api/libraryApi';
 import { pushToast } from '../store/uiSlice';
 import { useRecentActivity } from './useRecentActivity';
+import { useAuth } from './useAuth';
 import type { MovieSummary, PlaylistItem } from '../api/types';
 
 /**
@@ -19,7 +20,8 @@ export function usePlaylistActions() {
   const [addItem] = useAddItemMutation();
   const [removeItem] = useRemoveItemMutation();
   const [createPlaylist] = useCreatePlaylistMutation();
-  const { data: playlists } = useListPlaylistsQuery();
+  const { isAuthenticated } = useAuth();
+  const { data: playlists } = useListPlaylistsQuery(undefined, { skip: !isAuthenticated });
   const { record } = useRecentActivity();
 
   const addTo = useCallback(

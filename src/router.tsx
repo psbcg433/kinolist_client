@@ -17,8 +17,6 @@ const FavouritesPage = lazy(() => import('./features/library/FavouritesPage'));
 const WatchlistPage = lazy(() => import('./features/library/WatchlistPage'));
 const ProfilePage = lazy(() => import('./features/profile/ProfilePage'));
 const SettingsPage = lazy(() => import('./features/settings/SettingsPage'));
-const SecurityPage = lazy(() => import('./features/settings/SecurityPage'));
-const SessionsPage = lazy(() => import('./features/settings/SessionsPage'));
 
 function LazyBoundary({ children }: { children: ReactNode }) {
   return <Suspense fallback={<PageSkeleton />}>{children}</Suspense>;
@@ -63,8 +61,8 @@ export const router = createBrowserRouter([
       { path: 'library/watchlist', element: protectedPage(<WatchlistPage />) },
       { path: 'profile', element: protectedPage(<ProfilePage />) },
       { path: 'settings', element: protectedPage(<SettingsPage />) },
-      { path: 'settings/security', element: protectedPage(<SecurityPage />) },
-      { path: 'settings/sessions', element: protectedPage(<SessionsPage />) },
+      { path: 'settings/security', element: <Navigate to="/settings#security" replace /> },
+      { path: 'settings/sessions', element: <Navigate to="/settings#sessions" replace /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

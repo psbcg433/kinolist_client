@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import {
   useGetPlaylistQuery,
@@ -128,13 +128,6 @@ export default function PlaylistPage() {
             posterUrl: i.posterUrl,
           }))}
         />
-      )}
-
-      {items.length > 0 && isCustom && (
-        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
-          Tip: open a movie and use "Add to playlist…" to manage items; remove here via the
-          detail page.
-        </Typography>
       )}
 
       <ConfirmDialog

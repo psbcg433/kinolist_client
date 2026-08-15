@@ -4,17 +4,16 @@ import type { MovieSummary } from '../../api/types';
 
 interface MovieGridProps {
   movies: MovieSummary[];
-  footer?: (movie: MovieSummary) => React.ReactNode;
   columns?: { xs: number; sm: number; md: number; lg: number; xl: number };
 }
 
-const DEFAULT_COLUMNS = { xs: 2, sm: 4, md: 6, lg: 8, xl: 10 };
+const DEFAULT_COLUMNS = { xs: 1, sm: 2, md: 3, lg: 4, xl: 4 };
 
 /**
  * Responsive poster grid using MUI Grid2 (§1). Each cell spans one column;
- * total columns change per breakpoint so cards scale 2→4→6→8→10 across.
+ * Cards stay intentionally generous so their metadata and library controls remain usable.
  */
-export function MovieGrid({ movies, footer, columns = DEFAULT_COLUMNS }: MovieGridProps) {
+export function MovieGrid({ movies, columns = DEFAULT_COLUMNS }: MovieGridProps) {
   return (
     <Grid2
       container
@@ -32,7 +31,7 @@ export function MovieGrid({ movies, footer, columns = DEFAULT_COLUMNS }: MovieGr
           }}
           key={movie.imdbId}
         >
-          <MovieCard movie={movie} footer={footer ? footer(movie) : undefined} />
+          <MovieCard movie={movie} />
         </Grid2>
       ))}
     </Grid2>

@@ -195,7 +195,7 @@ export default function MovieDetailPage() {
 
       <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} alignItems="stretch">
         <Card sx={{ p: { xs: 2.5, md: 3 }, flex: 1 }}>
-          <Typography variant="h5">Storyline</Typography>
+          <Typography variant="h5" component="h2">Storyline</Typography>
           <Typography color="text.secondary" sx={{ mt: 1.2, lineHeight: 1.8 }}>{movie.plot || 'No plot summary is available for this title.'}</Typography>
           <Divider sx={{ my: 3 }} />
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 2.5 }}>
@@ -230,7 +230,7 @@ function ScoreCard({ icon, label, value, detail }: { icon: React.ReactNode; labe
     <Card sx={{ p: 2, minWidth: 0 }}>
       <Box sx={{ color: '#ffc857', mb: 1 }}>{icon}</Box>
       <Typography variant="caption" color="text.secondary">{label}</Typography>
-      <Typography variant="h6">{value}</Typography>
+      <Typography variant="h6" component="p">{value}</Typography>
       {detail && <Typography variant="caption" color="text.secondary" noWrap display="block">{detail}</Typography>}
     </Card>
   );

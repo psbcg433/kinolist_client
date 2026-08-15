@@ -31,16 +31,19 @@ img { display: block; }
 .poster-rail {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(144px, 11vw);
-  gap: 18px;
+  grid-auto-columns: clamp(260px, 17vw, 315px);
+  gap: 20px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scroll-snap-type: inline proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  touch-action: pan-x pan-y pinch-zoom;
+  scroll-behavior: smooth;
   padding: 3px 2px 18px;
 }
 
-.poster-rail > * { scroll-snap-align: start; }
+.poster-rail::-webkit-scrollbar { display: none; }
 
 @media (max-width: 700px) {
-  .poster-rail { grid-auto-columns: minmax(132px, 42vw); gap: 12px; }
+  .poster-rail { grid-auto-columns: minmax(270px, 84vw); gap: 14px; }
 }

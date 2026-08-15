@@ -29,7 +29,6 @@ export const theme = createTheme({
       styleOverrides: {
         body: {
           backgroundImage: 'radial-gradient(circle at 18% -10%, rgba(146,84,255,.17), transparent 30%), radial-gradient(circle at 88% 18%, rgba(236,61,255,.07), transparent 24%)',
-          backgroundAttachment: 'fixed',
         },
         '::selection': { background: alpha(violet, 0.48) },
       },
@@ -39,7 +38,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: { textTransform: 'none', borderRadius: 999, minHeight: 40, paddingInline: 20 },
         containedPrimary: {
-          backgroundImage: `linear-gradient(135deg, ${violet}, ${magenta})`,
+          backgroundImage: 'linear-gradient(135deg, #7136ff, #a91db7)',
           '&:hover': { boxShadow: `0 10px 28px ${alpha(violet, 0.32)}` },
         },
       },
@@ -67,7 +66,12 @@ export const theme = createTheme({
         root: { backgroundColor: alpha('#090812', 0.78), '& fieldset': { borderColor: alpha('#c5a9ff', 0.2) } },
       },
     },
-    MuiChip: { styleOverrides: { root: { fontWeight: 650 } } },
+    MuiChip: {
+      styleOverrides: {
+        root: { fontWeight: 650 },
+        colorPrimary: { color: '#fff', backgroundColor: '#6730cb' },
+      },
+    },
     MuiSkeleton: { defaultProps: { animation: 'wave' }, styleOverrides: { root: { backgroundColor: alpha('#c5a9ff', 0.1) } } },
   },
 });

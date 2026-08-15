@@ -11,7 +11,16 @@ export const AI_SEARCH_HARD_LIMIT: number =
 export const IMAGE_MAX_BYTES: number =
   Number(import.meta.env.VITE_IMAGE_MAX_BYTES) || 5 * 1024 * 1024;
 
-export const RECENT_ACTIVITY_STORAGE_KEY = 'kinolist.recentActivity';
+// Legacy, unscoped key. It is intentionally retained only so it can be
+// removed; assigning its contents to any account would leak another user's
+// browser-local history.
+export const LEGACY_RECENT_ACTIVITY_STORAGE_KEY = 'kinolist.recentActivity';
+
+export function recentActivityStorageKey(userId: string | null): string {
+  return userId
+    ? `kinolist.user.${encodeURIComponent(userId)}.recentActivity`
+    : 'kinolist.guest.recentActivity';
+}
 
 export const RECENT_ACTIVITY_CAP: number =
   Number(import.meta.env.VITE_RECENT_ACTIVITY_CAP) || 10;

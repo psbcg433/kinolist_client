@@ -1,0 +1,8 @@
+# KinoList
+
+KinoList is a personal movie and series discovery application with search, AI-assisted discovery, favourites, watchlists, and custom collections.
+
+- [Home and discovery](/)
+- [Search the catalogue](/search)
+- [Sign in](/login)
+- [Create an account](/register)

@@ -77,6 +77,7 @@ export interface Playlist {
   isSystem: boolean;
   itemCount: number;
   items?: PlaylistItem[];
+  itemIds?: string[];
 }
 
 export interface LibrarySummary {
@@ -95,6 +96,7 @@ export interface MovieSummary {
   genres?: string[];
   contentRating?: string | null;
   releaseDate?: string | null;
+  plot?: string | null;
   imdbRating?: string | null;
   imdbVotes?: string | null;
   metascore?: string | null;
@@ -141,6 +143,8 @@ export interface RecentActivityMovie {
   year?: string;
   posterUrl?: string;
   genres: string[];
+  type?: string;
+  imdbRating?: string;
 }
 
 export type RecentActivityType = 'search' | 'watchlist' | 'favourite' | 'view';

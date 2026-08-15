@@ -78,7 +78,7 @@ interface ErrorStateProps {
 export function ErrorState({ title = 'Something went wrong', message, requestId, onRetry, children }: ErrorStateProps) {
   return (
     <Box sx={{ py: 10, px: 2, textAlign: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
-      <Typography variant="h5" sx={{ fontWeight: 800 }}>{title}</Typography>
+      <Typography variant="h5" component="h1" sx={{ fontWeight: 800 }}>{title}</Typography>
       {message && <Typography color="text.secondary" sx={{ mt: 1 }}>{message}</Typography>}
       {requestId && <Typography variant="caption" color="text.secondary">Request ID: {requestId}</Typography>}
       {onRetry && <Button variant="contained" onClick={onRetry} sx={{ mt: 2 }}>Try again</Button>}
@@ -90,7 +90,7 @@ export function ErrorState({ title = 'Something went wrong', message, requestId,
 export function EmptyState({ label = 'Nothing here yet' }: { label?: string }) {
   return (
     <Box sx={{ py: 8, px: 3, textAlign: 'center', border: '1px dashed', borderColor: 'divider', borderRadius: 3 }}>
-      <Typography variant="h6" color="text.secondary">{label}</Typography>
+      <Typography variant="h6" component="p" color="text.secondary">{label}</Typography>
     </Box>
   );
 }

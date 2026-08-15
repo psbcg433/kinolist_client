@@ -1,15 +1,16 @@
 import {
-  RECENT_ACTIVITY_STORAGE_KEY,
+  LEGACY_RECENT_ACTIVITY_STORAGE_KEY,
   RECENT_ACTIVITY_CAP,
   RECENT_ACTIVITY_TTL_DAYS,
 } from './constants';
 import type { RecentActivityEvent, RecentActivityMovie, RecentActivityType } from '../api/types';
 
 const TTL_MS = RECENT_ACTIVITY_TTL_DAYS * 24 * 60 * 60 * 1000;
+export const RECENT_ACTIVITY_UPDATED_EVENT = 'kinolist:recent-activity-updated';
 
-function read(): RecentActivityEvent[] {
+function read(storageKey: string): RecentActivityEvent[] {
   try {
-    const raw = window.localStorage.getItem(RECENT_ACTIVITY_STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
@@ -20,9 +21,9 @@ function read(): RecentActivityEvent[] {
   }
 }
 
-function write(events: RecentActivityEvent[]) {
+function write(storageKey: string, events: RecentActivityEvent[]) {
   try {
-    window.localStorage.setItem(RECENT_ACTIVITY_STORAGE_KEY, JSON.stringify(events));
+    window.localStorage.setItem(storageKey, JSON.stringify(events));
   } catch {
     // quota/private-mode — degrade silently, recent activity is best-effort
   }
@@ -34,10 +35,11 @@ function dedupeKey(e: RecentActivityEvent): string {
 }
 
 export function recordActivity(
+  storageKey: string,
   type: RecentActivityType,
   payload: { query?: string; movie?: RecentActivityMovie }
 ): RecentActivityEvent[] {
-  const events = read();
+  const events = read(storageKey);
   const event: RecentActivityEvent = {
     id: crypto.randomUUID(),
     type,
@@ -48,19 +50,30 @@ export function recordActivity(
   const key = dedupeKey(event);
   const rest = events.filter((e) => dedupeKey(e) !== key);
   const next = [event, ...rest].slice(0, RECENT_ACTIVITY_CAP);
-  write(next);
+  write(storageKey, next);
+  window.dispatchEvent(new CustomEvent(RECENT_ACTIVITY_UPDATED_EVENT, { detail: { storageKey } }));
   return next;
 }
 
-export function listActivity(): RecentActivityEvent[] {
-  const events = read().sort((a, b) => b.at - a.at);
-  if (events.length !== read().length) write(events);
+export function listActivity(storageKey: string): RecentActivityEvent[] {
+  const stored = read(storageKey);
+  const events = [...stored].sort((a, b) => b.at - a.at);
+  if (events.length !== stored.length) write(storageKey, events);
   return events;
 }
 
-export function clearActivity() {
+export function clearActivity(storageKey: string) {
   try {
-    window.localStorage.removeItem(RECENT_ACTIVITY_STORAGE_KEY);
+    window.localStorage.removeItem(storageKey);
+    window.dispatchEvent(new CustomEvent(RECENT_ACTIVITY_UPDATED_EVENT, { detail: { storageKey } }));
+  } catch {
+    // ignore
+  }
+}
+
+export function clearLegacyActivity() {
+  try {
+    window.localStorage.removeItem(LEGACY_RECENT_ACTIVITY_STORAGE_KEY);
   } catch {
     // ignore
   }

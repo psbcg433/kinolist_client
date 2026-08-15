@@ -29,10 +29,10 @@ export default function RecommendationsPage() {
         </Typography>
       </Box>
 
-      <MovieRail title="From your last search" subtitle="Close matches to your latest query" movies={lastSearch.data?.movies} isLoading={lastSearch.isLoading} isError={lastSearch.isError} onRetry={lastSearch.refetch} emptyLabel="Search for a title to unlock this row." />
-      <MovieRail title="From your search history" subtitle="Patterns from the things you keep looking for" movies={history.data?.movies} isLoading={history.isLoading} isError={history.isError} onRetry={history.refetch} emptyLabel="Your search history has not produced recommendations yet." />
-      <MovieRail title="Because of your favourites" subtitle="More titles with a similar feel" movies={favourites.data?.movies} isLoading={favourites.isLoading} isError={favourites.isError} onRetry={favourites.refetch} emptyLabel="Favourite a few titles to tune this row." />
-      <MovieRail title="Based on your watchlist" subtitle="Keep exploring what you plan to watch" movies={watchlist.data?.movies} isLoading={watchlist.isLoading} isError={watchlist.isError} onRetry={watchlist.refetch} emptyLabel="Add titles to your watchlist to tune this row." />
+      <MovieRail title="From your last search" subtitle="Close matches to your latest query" movies={lastSearch.data?.movies} isLoading={lastSearch.isLoading} isError={lastSearch.isError} hideWhenEmpty hideWhenError />
+      <MovieRail title="From your search history" subtitle="Patterns from the things you keep looking for" movies={history.data?.movies} isLoading={history.isLoading} isError={history.isError} hideWhenEmpty hideWhenError />
+      <MovieRail title="Because of your favourites" subtitle="More titles with a similar feel" movies={favourites.data?.movies} isLoading={favourites.isLoading} isError={favourites.isError} hideWhenEmpty hideWhenError />
+      <MovieRail title="Based on your watchlist" subtitle="Keep exploring what you plan to watch" movies={watchlist.data?.movies} isLoading={watchlist.isLoading} isError={watchlist.isError} hideWhenEmpty hideWhenError />
     </Box>
   );
 }

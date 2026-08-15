@@ -2,31 +2,28 @@ import { useState } from 'react';
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  CardActionArea,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
-  Typography,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
-import { Link } from 'react-router-dom';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import {
-  useListPlaylistsQuery,
-  useGetSummaryQuery,
   useDeletePlaylistMutation,
+  useGetPlaylistQuery,
+  useGetSummaryQuery,
+  useListPlaylistsQuery,
 } from '../../api/libraryApi';
-import { usePlaylistActions } from '../../hooks/usePlaylistActions';
-import { usePageMeta } from '../../hooks/usePageMeta';
-import { LoadingState, EmptyState } from '../../components/state';
-import { PageHeader } from '../../components/ui/PageHeader';
+import type { MovieSummary, Playlist } from '../../api/types';
+import { MovieRail } from '../../components/movie/MovieRail';
+import { EmptyState, LoadingState } from '../../components/state';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { usePageMeta } from '../../hooks/usePageMeta';
+import { usePlaylistActions } from '../../hooks/usePlaylistActions';
 import { useAppDispatch } from '../../store/hooks';
 import { pushToast } from '../../store/uiSlice';
-import type { Playlist } from '../../api/types';
 
 export default function LibraryPage() {
   usePageMeta('My Library');
@@ -35,7 +32,6 @@ export default function LibraryPage() {
   const [deletePlaylist] = useDeletePlaylistMutation();
   const { create } = usePlaylistActions();
   const dispatch = useAppDispatch();
-
   const [createOpen, setCreateOpen] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -43,6 +39,7 @@ export default function LibraryPage() {
   const [toDelete, setToDelete] = useState<Playlist | null>(null);
 
   const playlists = playlistsData?.playlists ?? [];
+  const populatedPlaylists = playlists.filter((playlist) => playlist.itemCount > 0);
   const summary = summaryData?.summary;
 
   const handleCreate = async () => {
@@ -51,25 +48,22 @@ export default function LibraryPage() {
       setNameError('Name is required');
       return;
     }
-    const pl = await create(trimmed, description.trim() || undefined);
-    if (pl) {
-      setCreateOpen(false);
-      setName('');
-      setDescription('');
-      setNameError(null);
-    } else {
+    const playlist = await create(trimmed, description.trim() || undefined);
+    if (!playlist) {
       setNameError('A playlist with that name may already exist.');
+      return;
     }
+    setCreateOpen(false);
+    setName('');
+    setDescription('');
+    setNameError(null);
   };
 
   const handleDelete = async () => {
     if (!toDelete) return;
-    const res = await deletePlaylist(toDelete.id);
-    if ('error' in res) {
-      dispatch(pushToast({ message: 'Could not delete playlist', severity: 'error' }));
-    } else {
-      dispatch(pushToast({ message: `Deleted “${toDelete.name}”`, severity: 'info' }));
-    }
+    const result = await deletePlaylist(toDelete.id);
+    if ('error' in result) dispatch(pushToast({ message: 'Could not delete playlist', severity: 'error' }));
+    else dispatch(pushToast({ message: `Deleted “${toDelete.name}”`, severity: 'info' }));
     setToDelete(null);
   };
 
@@ -77,106 +71,29 @@ export default function LibraryPage() {
     <Box>
       <PageHeader
         title="My Library"
-        subtitle={
-          summary
-            ? `${summary.favouritesCount} favourites · ${summary.watchlistCount} watchlist · ${summary.customPlaylists.length} custom`
-            : undefined
-        }
-        action={
-          <Button variant="contained" onClick={() => setCreateOpen(true)}>
-            New playlist
-          </Button>
-        }
+        subtitle={summary ? `${summary.favouritesCount} favourites · ${summary.watchlistCount} watchlist · ${summary.customPlaylists.length} custom` : undefined}
+        action={<Button variant="contained" onClick={() => setCreateOpen(true)}>New playlist</Button>}
       />
 
-      {isLoading ? (
-        <LoadingState />
-      ) : playlists.length === 0 ? (
-        <EmptyState label="Your library is empty — start adding films" />
-      ) : (
+      {isLoading ? <LoadingState /> : populatedPlaylists.length === 0 ? <EmptyState label="Your library is empty — start adding films" /> : (
         <Box>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
-            System lists
-          </Typography>
-          <Grid2 container spacing={2} sx={{ mb: 4 }}>
-            {playlists
-              .filter((p) => p.isSystem)
-              .map((p) => (
-                <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={p.id}>
-                  <SystemPlaylistCard p={p} />
-                </Grid2>
-              ))}
-          </Grid2>
-
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
-            Custom playlists
-          </Typography>
-          <Grid2 container spacing={2}>
-            {playlists
-              .filter((p) => !p.isSystem)
-              .map((p) => (
-                <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={p.id}>
-                  <Card>
-                    <CardActionArea component={Link} to={`/library/playlists/${p.id}`}>
-                      <CardContent>
-                        <Typography variant="h6" noWrap>
-                          {p.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap>
-                          {p.description || 'No description'}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {p.itemCount} item{p.itemCount === 1 ? '' : 's'}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                    <Box sx={{ px: 2, pb: 1.5 }}>
-                      <Button size="small" color="error" onClick={() => setToDelete(p)}>
-                        Delete
-                      </Button>
-                    </Box>
-                  </Card>
-                </Grid2>
-              ))}
-          </Grid2>
+          {populatedPlaylists.map((playlist) => (
+            <LibraryPlaylistRail key={playlist.id} playlist={playlist} onDelete={() => setToDelete(playlist)} />
+          ))}
         </Box>
       )}
 
       <Dialog open={createOpen} onClose={() => setCreateOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Create playlist</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            label="Name"
-            fullWidth
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setNameError(null);
-            }}
-            error={!!nameError}
-            helperText={nameError}
-            sx={{ mb: 2, mt: 1 }}
-          />
-          <TextField
-            label="Description (optional)"
-            fullWidth
-            multiline
-            rows={2}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <TextField autoFocus label="Name" fullWidth value={name} onChange={(event) => { setName(event.target.value); setNameError(null); }} error={Boolean(nameError)} helperText={nameError} sx={{ mb: 2, mt: 1 }} />
+          <TextField label="Description (optional)" fullWidth multiline rows={2} value={description} onChange={(event) => setDescription(event.target.value)} />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCreateOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleCreate} disabled={!name.trim()}>
-            Create
-          </Button>
-        </DialogActions>
+        <DialogActions><Button onClick={() => setCreateOpen(false)}>Cancel</Button><Button variant="contained" onClick={handleCreate} disabled={!name.trim()}>Create</Button></DialogActions>
       </Dialog>
 
       <ConfirmDialog
-        open={!!toDelete}
+        open={Boolean(toDelete)}
         title="Delete playlist?"
         message={toDelete ? `“${toDelete.name}” and its ${toDelete.itemCount} items will be deleted. This cannot be undone.` : ''}
         confirmLabel="Delete"
@@ -188,18 +105,31 @@ export default function LibraryPage() {
   );
 }
 
-function SystemPlaylistCard({ p }: { p: Playlist }) {
-  const isFavourites = p.type === 'favourites';
+function LibraryPlaylistRail({ playlist, onDelete }: { playlist: Playlist; onDelete: () => void }) {
+  const detail = useGetPlaylistQuery(playlist.id);
+  const resolved = detail.data?.playlist ?? playlist;
+  const movies: MovieSummary[] = (resolved.items ?? []).map((item) => ({
+    imdbId: item.imdbId,
+    title: item.title,
+    year: '',
+    type: '',
+    posterUrl: item.posterUrl,
+  }));
+  const action = !playlist.isSystem ? (
+    <Button color="error" size="small" startIcon={<DeleteOutlineRoundedIcon />} onClick={onDelete}>Delete playlist</Button>
+  ) : undefined;
+
   return (
-    <Card>
-      <CardActionArea component={Link} to={isFavourites ? '/library/favourites' : '/library/watchlist'}>
-        <CardContent>
-          <Typography variant="h6">{isFavourites ? '★ Favourites' : '✓ Watchlist'}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {p.itemCount} item{p.itemCount === 1 ? '' : 's'}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <MovieRail
+      title={resolved.name}
+      subtitle={resolved.description || `${resolved.itemCount} title${resolved.itemCount === 1 ? '' : 's'}`}
+      movies={movies}
+      isLoading={detail.isLoading}
+      isError={detail.isError}
+      onRetry={detail.refetch}
+      emptyLabel="No titles in this playlist yet."
+      action={action}
+      removalPlaylist={{ id: resolved.id, name: resolved.name }}
+    />
   );
 }

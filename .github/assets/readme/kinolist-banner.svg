@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-labelledby="title description">
+  <title id="title">KinoList cinematic product banner</title>
+  <desc id="description">A dark violet cinema-inspired banner presenting KinoList as a personal movie discovery and collection product.</desc>
+  <defs>
+    <linearGradient id="canvas" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#05050d"/>
+      <stop offset="0.48" stop-color="#100821"/>
+      <stop offset="1" stop-color="#070711"/>
+    </linearGradient>
+    <radialGradient id="violet" cx="0.18" cy="0.3" r="0.7">
+      <stop offset="0" stop-color="#7d3cff" stop-opacity="0.58"/>
+      <stop offset="0.5" stop-color="#6425cf" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#6425cf" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="magenta" cx="0.85" cy="0.3" r="0.55">
+      <stop offset="0" stop-color="#ec3dff" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#ec3dff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a3cff"/>
+      <stop offset="1" stop-color="#ec3dff"/>
+    </linearGradient>
+    <linearGradient id="posterA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#273b7c"/>
+      <stop offset="0.52" stop-color="#17152e"/>
+      <stop offset="1" stop-color="#090911"/>
+    </linearGradient>
+    <linearGradient id="posterB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#732770"/>
+      <stop offset="0.55" stop-color="#22102f"/>
+      <stop offset="1" stop-color="#0a0912"/>
+    </linearGradient>
+    <linearGradient id="posterC" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#84531f"/>
+      <stop offset="0.52" stop-color="#271528"/>
+      <stop offset="1" stop-color="#090911"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#000" flood-opacity="0.56"/>
+    </filter>
+    <pattern id="grain" width="64" height="64" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="10" r="1" fill="#fff" opacity="0.035"/>
+      <circle cx="37" cy="28" r="1" fill="#fff" opacity="0.025"/>
+      <circle cx="58" cy="51" r="1" fill="#fff" opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="560" rx="34" fill="url(#canvas)"/>
+  <rect width="1600" height="560" rx="34" fill="url(#violet)"/>
+  <rect width="1600" height="560" rx="34" fill="url(#magenta)"/>
+  <rect width="1600" height="560" rx="34" fill="url(#grain)"/>
+  <rect x="1" y="1" width="1598" height="558" rx="33" fill="none" stroke="#c39aff" stroke-opacity="0.18"/>
+
+  <g transform="translate(92 88)">
+    <rect width="72" height="72" rx="22" fill="url(#brand)"/>
+    <rect x="22" y="16" width="29" height="40" rx="5" fill="#fff" fill-opacity="0.96"/>
+    <circle cx="29" cy="25" r="3" fill="#a54df0"/>
+    <circle cx="44" cy="25" r="3" fill="#a54df0"/>
+    <circle cx="29" cy="47" r="3" fill="#a54df0"/>
+    <circle cx="44" cy="47" r="3" fill="#a54df0"/>
+  </g>
+
+  <g font-family="DejaVu Sans, Arial, sans-serif">
+    <text x="188" y="128" fill="#f7f3ff" font-size="34" font-weight="700">KinoList</text>
+    <text x="92" y="239" fill="#c39aff" font-size="16" font-weight="800" letter-spacing="4">DISCOVER · ORGANISE · REMEMBER</text>
+    <text x="92" y="318" fill="#ffffff" font-size="58" font-weight="700">Your cinema, remembered.</text>
+    <text x="95" y="368" fill="#bdb5ca" font-size="22" font-weight="450">Intelligent discovery, personal collections, and secure continuity—</text>
+    <text x="95" y="400" fill="#bdb5ca" font-size="22" font-weight="450">designed as one cinematic product.</text>
+
+    <g transform="translate(94 452)" font-size="14" font-weight="750">
+      <rect width="150" height="40" rx="20" fill="#9254ff" fill-opacity="0.15" stroke="#c39aff" stroke-opacity="0.35"/>
+      <text x="75" y="26" text-anchor="middle" fill="#d8c2ff">AI DISCOVERY</text>
+      <rect x="164" width="178" height="40" rx="20" fill="#9254ff" fill-opacity="0.15" stroke="#c39aff" stroke-opacity="0.35"/>
+      <text x="253" y="26" text-anchor="middle" fill="#d8c2ff">SMART LIBRARY</text>
+      <rect x="356" width="164" height="40" rx="20" fill="#9254ff" fill-opacity="0.15" stroke="#c39aff" stroke-opacity="0.35"/>
+      <text x="438" y="26" text-anchor="middle" fill="#d8c2ff">SECURE SESSIONS</text>
+    </g>
+  </g>
+
+  <g transform="translate(1045 60)" filter="url(#shadow)">
+    <rect x="0" y="80" width="244" height="354" rx="30" fill="url(#posterA)" stroke="#c39aff" stroke-opacity="0.3" transform="rotate(-9 122 257)"/>
+    <circle cx="108" cy="208" r="84" fill="#7157d7" opacity="0.18" filter="url(#glow)"/>
+    <path d="M60 327 L123 174 L186 327 Z" fill="none" stroke="#b9a8ff" stroke-opacity="0.28" stroke-width="3" transform="rotate(-9 122 257)"/>
+
+    <rect x="205" y="69" width="244" height="354" rx="30" fill="url(#posterB)" stroke="#f887ff" stroke-opacity="0.3" transform="rotate(9 327 246)"/>
+    <circle cx="338" cy="191" r="75" fill="#ec3dff" opacity="0.17" filter="url(#glow)"/>
+    <path d="M275 294 C320 214 369 214 413 294" fill="none" stroke="#f4c5ff" stroke-opacity="0.32" stroke-width="3" transform="rotate(9 327 246)"/>
+
+    <rect x="105" y="34" width="258" height="384" rx="32" fill="url(#posterC)" stroke="#ffc857" stroke-opacity="0.25"/>
+    <circle cx="234" cy="157" r="92" fill="#f3a132" opacity="0.14" filter="url(#glow)"/>
+    <circle cx="234" cy="157" r="70" fill="none" stroke="#ffc857" stroke-opacity="0.24" stroke-width="2"/>
+    <circle cx="234" cy="157" r="45" fill="none" stroke="#ffc857" stroke-opacity="0.18" stroke-width="2"/>
+    <path d="M135 294 C177 246 290 240 335 294 L335 380 L135 380 Z" fill="#070711" fill-opacity="0.72"/>
+    <text x="142" y="323" fill="#fff" font-family="DejaVu Sans, Arial, sans-serif" font-size="18" font-weight="700">TONIGHT'S PICK</text>
+    <text x="142" y="351" fill="#c39aff" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2">CURATED FOR YOU</text>
+    <rect x="279" y="303" width="39" height="39" rx="20" fill="url(#brand)"/>
+    <path d="M295 315 L295 330 L307 322.5 Z" fill="#fff"/>
+  </g>
+
+  <path d="M905 46 V514" stroke="#c39aff" stroke-opacity="0.1"/>
+</svg>

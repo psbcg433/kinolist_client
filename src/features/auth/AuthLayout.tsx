@@ -31,7 +31,7 @@ export function AuthLayout({ eyebrow, title, subtitle, children, footer }: AuthL
             <Typography fontWeight={800}>A library that learns your taste</Typography>
           </Stack>
           <Box>
-            <Typography variant="h3" sx={{ mb: 2 }}>Keep every great watch within reach.</Typography>
+            <Typography variant="h3" component="p" sx={{ mb: 2 }}>Keep every great watch within reach.</Typography>
             <Typography color="text.secondary">
               Discover new titles, organise favourites and watchlists, and return to a personalised home on every device.
             </Typography>

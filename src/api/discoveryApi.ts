@@ -7,6 +7,8 @@ export interface SearchArgs {
   page?: number;
   type?: 'movie' | 'series' | 'episode';
   year?: number;
+  preview?: boolean;
+  limit?: number;
 }
 
 function searchParams(args: string | SearchArgs) {
@@ -21,8 +23,8 @@ export const discoveryApi = createApi({
     search: build.query<PaginatedMovies, string | SearchArgs>({
       query: (args) => ({ url: '/search', params: searchParams(args) }),
     }),
-    aiSearch: build.query<PaginatedMovies, string>({
-      query: (q) => ({ url: '/search/ai', params: { q } }),
+    aiSearch: build.query<PaginatedMovies, Pick<SearchArgs, 'q' | 'type' | 'preview' | 'limit'>>({
+      query: (args) => ({ url: '/search/ai', params: args }),
     }),
     trendingFeed: build.query<PaginatedMovies, void>({
       query: () => '/feed/trending',
