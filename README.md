@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/readme/kinolist-banner.svg" alt="KinoList — your cinema, remembered" width="100%" />
+  <img src="public/Banner%20top.png" alt="KinoList — your cinema, remembered" width="100%" />
 </p>
 
 <h1 align="center">KinoList Client</h1>
@@ -74,6 +74,10 @@ The application deliberately talks only to the KinoList API Gateway. Movie provi
 
 ### Discovery home
 
+<p align="center">
+  <img src="public/Homepage.png" alt="KinoList discovery homepage" width="100%" />
+</p>
+
 The home experience is built as a cinematic storefront rather than a conventional dashboard:
 
 - An automatic five-title featured stage.
@@ -87,6 +91,10 @@ The home experience is built as a cinematic storefront rather than a conventiona
 
 Sections with no usable content remain hidden instead of displaying broken or empty placeholders.
 
+<p align="center">
+  <img src="public/Recommendation%20screen.png" alt="KinoList personalised recommendation rails" width="100%" />
+</p>
+
 ### Search
 
 KinoList exposes two search modes through one responsive search surface:
@@ -97,6 +105,10 @@ KinoList exposes two search modes through one responsive search surface:
 | **AI** | Accepts natural-language intent and returns a deliberately bounded result set. |
 
 Typing is debounced before the authenticated AI preview endpoint is called. Up to five suggestions appear below the search control without replacing the existing result grid. Movie/series filtering remains available in both modes, and the most recent resolved searches are shown before a new query is committed.
+
+<p align="center">
+  <img src="public/Search%20Result.png" alt="KinoList search results and live suggestions" width="100%" />
+</p>
 
 ### Library and collections
 
@@ -109,9 +121,17 @@ Users can create additional named collections from a movie card, the library, or
 
 Favourite and save controls use immediate visual feedback. If the server operation fails, the UI rolls back to its previous state and reports the error through the global snackbar system.
 
+<p align="center">
+  <img src="public/Show%20Page.png" alt="KinoList movie detail page" width="100%" />
+</p>
+
 ### Profile and account centre
 
 The profile is a visual identity surface with a full-width fading cover, avatar, biography, saved-title summary, and clickable collection stacks. The private email address is intentionally excluded from the public profile presentation.
+
+<p align="center">
+  <img src="public/ProfilePage.png" alt="KinoList profile and visual collection stacks" width="100%" />
+</p>
 
 Settings consolidate account management into one screen:
 
@@ -121,6 +141,10 @@ Settings consolidate account management into one screen:
 - Active device/session inspection and revocation.
 - Logout across every device.
 - Permanent account deletion with password confirmation.
+
+<p align="center">
+  <img src="public/Profile%20Settings.png" alt="KinoList profile, security, session, and account settings" width="70%" />
+</p>
 
 ### Responsive navigation
 
