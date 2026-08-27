@@ -8,6 +8,10 @@
   <strong>A cinematic discovery and collection experience built for people who want to find, organise, and remember what to watch.</strong>
 </p>
 
+<h2 align="center">
+  <a href="https://github.com/psbcg433/kinolist_backend">KinoList Backend Repository →</a>
+</h2>
+
 <p align="center">
   <img alt="React 19" src="https://img.shields.io/badge/React-19-9254ff?style=flat-square&logo=react&logoColor=white" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.6-6730cb?style=flat-square&logo=typescript&logoColor=white" />
